@@ -291,7 +291,7 @@ fn delegate() {
 
 #[inline]
 fn illegal_instruction_handler(ctx: &mut FastContext) -> bool {
-    use riscv_decode::{decode, Instruction};
+    use riscv_decode::{decode, Instruction, DecodingError};
     use riscv::register::{mepc, mtval};
 
     let inst = decode(mtval::read() as u32);
@@ -313,6 +313,12 @@ fn illegal_instruction_handler(ctx: &mut FastContext) -> bool {
                 );
                 ctx.regs().a[(csr.rd() - 10) as usize] = unsafe { SBI.assume_init_mut() }.clint.as_ref().unwrap().get_timeh();
             }
+            _ => return false,
+        },
+        Err(DecodingError::Unknown) => match mtval::read() {
+            0xC0FF_E0A7 => {
+                log::info!("CofferSBI Instruction: 0x{:08x}", mtval::read());
+            },
             _ => return false,
         },
         _ => return false,
