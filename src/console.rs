@@ -118,24 +118,39 @@ impl log::Log for Logger {
             Level::Trace => 90,
         };
 
+        const FILENAME_TRUNCATE_LENGTH: usize = 15;
+
         // Get the module path and file name and line number
         let file = record.file().unwrap_or("unknown_file");
-        let file = if file.len() > 10 {
-            &file[file.len() - 10..]
+        let short_file = if file.len() > FILENAME_TRUNCATE_LENGTH {
+            &file[file.len() - FILENAME_TRUNCATE_LENGTH..]
         } else {
             file
         };
         let line = record.line().unwrap_or(0);
         let module_path = record.module_path().unwrap_or("unknown_module");
 
-        println!(
-            "\x1b[{color_code}m[{:>5}][{}:{:>3}][{}] {}\x1b[0m",
-            record.level(),
-            file,
-            line,
-            module_path,
-            record.args()
-        );
+        if file.len() <= FILENAME_TRUNCATE_LENGTH {
+            println!(
+                "\x1b[{color_code}m[{:>5}][{}:{:>3}][{}] {}\x1b[0m",
+                record.level(),
+                short_file,
+                line,
+                module_path,
+                record.args()
+            );
+        } else {
+            println!(
+                "\x1b[{color_code}m[{:>5}][...{}:{:>3}][{}] {}\x1b[0m",
+                record.level(),
+                short_file,
+                line,
+                module_path,
+                record.args()
+            );
+        }
+
+
     }
 
     fn flush(&self) {}
