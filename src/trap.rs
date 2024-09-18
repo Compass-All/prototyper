@@ -293,6 +293,7 @@ fn delegate() {
 fn illegal_instruction_handler(ctx: &mut FastContext) -> bool {
     use riscv_decode::{decode, Instruction, DecodingError};
     use riscv::register::{mepc, mtval};
+    use coffersbi::coffer_inst::{CofferInst, emulate_coffer_inst};
 
     let inst = decode(mtval::read() as u32);
     match inst {
@@ -316,9 +317,10 @@ fn illegal_instruction_handler(ctx: &mut FastContext) -> bool {
             _ => return false,
         },
         Err(DecodingError::Unknown) => match mtval::read() {
-            0xC0FF_E0A7 => {
-                log::info!("CofferSBI Instruction: 0x{:08x}", mtval::read());
-            },
+            CofferInst::COFFER_CALL
+            | CofferInst::ENCLAVE_CALL
+            | CofferInst::HOST_CALL
+            | CofferInst::MESSAGE_CALL => emulate_coffer_inst(mtval::read(), ctx),
             _ => return false,
         },
         _ => return false,

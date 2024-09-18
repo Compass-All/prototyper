@@ -22,6 +22,7 @@ spin = "0.9.8"
 uart16550 = "0.0.1"
 riscv-decode = "0.2.1"
 fast-trap = { version = "0.0.1", features = ["riscv-m"] }
+coffersbi = { git = "https://github.com/Compass-All/coffersbi.git", branch = "dev", version = "0.0.0" }
 
 
 [[bin]]
