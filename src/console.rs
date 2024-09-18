@@ -117,10 +117,24 @@ impl log::Log for Logger {
             Level::Debug => 32,
             Level::Trace => 90,
         };
+
+        // Get the module path and file name and line number
+        let file = record.file().unwrap_or("unknown_file");
+        let file = if file.len() > 10 {
+            &file[file.len() - 10..]
+        } else {
+            file
+        };
+        let line = record.line().unwrap_or(0);
+        let module_path = record.module_path().unwrap_or("unknown_module");
+
         println!(
-            "\x1b[{color_code}m[{:>5}] {}\x1b[0m",
+            "\x1b[{color_code}m[{:>5}][{}:{:>3}][{}] {}\x1b[0m",
             record.level(),
-            record.args(),
+            file,
+            line,
+            module_path,
+            record.args()
         );
     }
 
