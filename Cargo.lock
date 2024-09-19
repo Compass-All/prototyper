@@ -26,7 +26,7 @@ dependencies = [
 [[package]]
 name = "coffersbi"
 version = "0.0.0"
-source = "git+https://github.com/Compass-All/coffersbi.git?branch=dev#f8b4b54e191e31133222b871c66a9387256eaca8"
+source = "git+https://github.com/Compass-All/coffersbi.git?branch=dev#fd0d68c891d618ca92b21118147f4ae4060b8d42"
 dependencies = [
  "buddy_system_allocator",
  "fast-trap",
