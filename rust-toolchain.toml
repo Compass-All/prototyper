@@ -1,0 +1,4 @@
+[toolchain]
+channel = "nightly-2024-09-08"
+components = [ "rustfmt", "rustc-dev" ]
+targets = [ "riscv64imac-unknown-none-elf" ]
